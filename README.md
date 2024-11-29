@@ -4,4 +4,4 @@ This website provides the datasets and source codes in our work of
 
 Demo: We build a demonstration plateform in (http://roqua.cpolar.top/).
 
-Due to the cost of renting GPUs, QA function in this DEMO only starts from Dec. 15, 2023 to Jan. 15, 2025.
+Due to the cost of renting GPUs, QA function in this DEMO only starts from Dec. 15, 2024 to Jan. 15, 2025.
