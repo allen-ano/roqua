@@ -1,15 +1,13 @@
 """
-Qwen开源基座大模型
+A class for using Qwen LLM
 """
 
 from transformers import AutoModelForCausalLM, AutoTokenizer,AutoModel
 
-
-# 通义千问大模型
 class Qwen:
     def __init__(self):
-        device = "cuda"  # the device to load the model onto
-        checkpoint = '/root/autodl-tmp/qwen2-7b'
+        device = "cuda"
+        checkpoint = '/root/autodl-tmp/qwen2-7b'  # path to LLM
 
         self.model = AutoModelForCausalLM.from_pretrained(
             checkpoint,
@@ -40,7 +38,7 @@ class Qwen:
         response = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
         return response
 
-    # 适用于多轮对话，返回的messages包含了当前轮的信息
+    # for multi-runs conversation. The returned message contains information in current run.
     def multiruns(self, messages):
         text = self.tokenizer.apply_chat_template(
             messages,
