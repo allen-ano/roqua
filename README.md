@@ -8,8 +8,8 @@ We build a demonstration plateform in (http://roqua.cpolar.top/). Owing to GPU r
 <hr>
 
 1. The folder of 'qa-data' contains three question-answering dataset used in our work.
-2. The reviews of jd, douyin and yelp can be found in [Google Drive](https://drive.google.com/drive/folders/18zInItjabNENuz6Q71lvND7nExDGj7zu?usp=sharing) . They are SQLite databases. Download these db files and put douyin_reviews.db and yelp_qa_reviews.db under douyin/data and yelp/data, respectively. 
-3. test.ipynb in folder of 'roqua' provides an interface for using ROQuA. 
-4. dp_* indicates the data processing files.
-5. fn_* indicates the modules in ROQuA. 
-6. First run dp.py to process data before runing ROQuA.
+2. The reviews of jd, douyin and yelp can be found in [Google Drive](https://drive.google.com/drive/folders/18zInItjabNENuz6Q71lvND7nExDGj7zu?usp=sharing) . They are SQLite databases. Download these db files and put douyin_reviews.db and yelp_qa_reviews.db under douyin/data and yelp/data, respectively.
+3. dp_* indicates the data processing files.
+4. fn_* indicates the modules in ROQuA. 
+5. First run dp.py to process data before runing ROQuA.
+6. test.ipynb in folder of 'roqua' provides an interface for using ROQuA. 
