@@ -7,5 +7,6 @@ We build a demonstration plateform in (http://roqua.cpolar.top/). Owing to GPU r
 
 <hr>
 
-1. The folder of 'qa-data' provide three question-answering dataset used in our work.
-2. The reviews of douyin and yelp can be found in their own directory in roqua. 
+1. The folder of 'qa-data' contains three question-answering dataset used in our work.
+2. The reviews of douyin and yelp can be found in their own directory in roqua.
+3. test.ipynb in 'roqua' provides an interface for using ROQuA. 
