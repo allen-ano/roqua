@@ -41,12 +41,12 @@ class YelpAPI:
         index = self.retriever.run(search_targets, topic, is_query)
         if index is None or len(index)<1:
             if is_query:
-                return ("No related reviews, please change your question!")
+                return ("No relevant reviews, please change your question!")
 
-            print("没有相关评论！重新按照Question检索")
+            print("No relevant reviews! use Question as query to search again!")
             index = self.retriever.run(query, topic, True)
             if index is None or len(index) < 1:
-                return("No related reviews, please change your question!")
+                return("No relevant reviews, please change your question!")
 
         if len(index) > 50:  # clustering
             # print("Clustering...")
@@ -59,7 +59,7 @@ class YelpAPI:
             response = ""
             for index, cluster in enumerate(clusters):
                 if len(cluster) < 1:
-                    print("没有相关评论！")
+                    print("No relevant reviews")
                     continue
                 # print(cluster)
                 opinion = self.om.summarize_opinion(query, cluster)
@@ -67,11 +67,11 @@ class YelpAPI:
                 # print(f"{index}: {opinion}")
 
             opinion = self.om.summrize_opinion_again(query, response)
-            return(f"{response}\n=== 进一步总结 ===\n{opinion}")
+            return(f"{response}\n=== Further Summary ===\n{opinion}")
         else:               # 评论数量少则不聚类操作
             reviews = self.clustering.get_reviews(self.rdb, index)
             if len(reviews)==0:
-                return("没有相关信息！")
+                return("No relevant information!")
             else:
                 # print(reviews)
                 opinion = self.om.summarize_opinion(query, reviews, num=30)
@@ -80,49 +80,4 @@ class YelpAPI:
     def divide_chunks(self, l, n):
         for i in range(0, len(l), n):
             yield l[i:i + n]
-    # 实验
-    def run2(self, query, target=None, topic=None):
-        _, topic, _ = self.rewriter.get(query)
-        search_targets = query
-        is_query = True
-
-        index = self.retriever.run(search_targets, topic, is_query)
-        if index is None or len(index)<1:
-            if is_query:
-                return ("No related reviews, please change your question!")
-
-            print("没有相关评论！重新按照Question检索")
-            index = self.retriever.run(query, topic, True)
-            if index is None or len(index) < 1:
-                return("No related reviews, please change your question!")
-
-        if len(index) > 30:  # clustering
-            clusters = list(self.divide_chunks(index, 30))
-            # print("Clustering...")
-            # print(index)
-            # if len(index)<70:
-            #     clusters = self.clustering.run(self.rdb, index)
-            # else:
-            #     clusters = self.clustering.run(self.rdb, index)
-
-            response = ""
-            for index, cluster in enumerate(clusters):
-                if len(cluster) < 1:
-                    print("没有相关评论！")
-                    continue
-                # print(cluster)
-                reviews = self.clustering.get_reviews(self.rdb, cluster)
-                opinion = self.om.summarize_opinion(query, reviews)
-                response += f"{index}: {opinion}\n"
-                # print(f"{index}: {opinion}")
-            opinion = self.om.summrize_opinion_again(query, response)
-            return(f"{response}\n=== 进一步总结 ===\n{opinion}")
-        else:               # 评论数量少则不聚类操作
-            reviews = self.clustering.get_reviews(self.rdb, index)
-            if len(reviews)==0:
-                return("没有相关信息！")
-            else:
-                # print(reviews)
-                opinion = self.om.summarize_opinion(query, reviews, num=30)
-                return(opinion)
-
+    

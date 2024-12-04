@@ -1,5 +1,6 @@
 """
-使用通义千问大模型进行观点挖掘
+opinion summarization using LLM
+
 """
 
 import json, re
@@ -11,7 +12,7 @@ class OpinionMiner:
     def __init__(self, llm):
         self.model = llm
 
-    # 挑选与问题相关的评论
+    # choosing reviews related with question
     def choose_related_reviews(self, question, reviews):
         sys_content = """You are an expert on text analysis."""
         s = ""
@@ -22,7 +23,7 @@ class OpinionMiner:
         res = self.model.call_with_message(messages)
         return res
 
-    # 从相关性判断结果里抽取出，相关性评论的下标列表
+    # extracting index of related reviews
     def extract_index(self, response):
         pattern = "([0-9]+)"
         response = str.lower(response)
@@ -39,7 +40,7 @@ class OpinionMiner:
     def summarize_opinion(self, question, reviews, num=30):
         response = self.choose_related_reviews(question, reviews)
         idx = self.extract_index(response)
-        if len(idx) == 0: return "没有相关信息！"
+        if len(idx) == 0: return "No relevant information!"
 
         reviews = np.array(reviews)[idx]
         s = ""
