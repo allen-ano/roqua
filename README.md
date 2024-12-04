@@ -8,7 +8,7 @@ We build a demonstration plateform in (http://roqua.cpolar.top/). Owing to GPU r
 <hr>
 
 1. The folder of 'qa-data' contains three question-answering dataset used in our work.
-2. The reviews of jd, douyin and yelp can be found in [Google Drive](https://drive.google.com/drive/folders/18zInItjabNENuz6Q71lvND7nExDGj7zu?usp=sharing) 
+2. The reviews of jd, douyin and yelp can be found in [Google Drive](https://drive.google.com/drive/folders/18zInItjabNENuz6Q71lvND7nExDGj7zu?usp=sharing) They are SQLite databases.
 3. test.ipynb in 'roqua' provides an interface for using ROQuA. 
 4. dp_* indicates the data processing files.
 5. fn_* indicates the modules in ROQuA. 
