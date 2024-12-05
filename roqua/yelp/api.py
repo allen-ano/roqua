@@ -16,7 +16,6 @@ class YelpAPI:
         self.clustering = Clustering()
         self.om = OpinionMiner(llm)
 
-    # 运行
     def run(self, query, target=None, topic=None):
         if target is None or topic is None:
             target, topic, res = self.rewriter.get(query)
@@ -68,7 +67,7 @@ class YelpAPI:
 
             opinion = self.om.summrize_opinion_again(query, response)
             return(f"{response}\n=== Further Summary ===\n{opinion}")
-        else:               # 评论数量少则不聚类操作
+        else:
             reviews = self.clustering.get_reviews(self.rdb, index)
             if len(reviews)==0:
                 return("No relevant information!")
@@ -77,7 +76,4 @@ class YelpAPI:
                 opinion = self.om.summarize_opinion(query, reviews, num=30)
                 return(opinion)
 
-    def divide_chunks(self, l, n):
-        for i in range(0, len(l), n):
-            yield l[i:i + n]
-    
+

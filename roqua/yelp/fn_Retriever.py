@@ -1,8 +1,6 @@
 """
-检索器，包括search和rank两个模块
-有两个类，在ranking模块使用的模型不同：
-一个是使用bert-chinese, 预先产生了每条评论的topic的表示向量，存储在了向量数据库
-另一个是使用BAAI的beg-reranker-large模型作为cross encoder。查询和评论的topic都以文本的形式送入模型
+Retriever includes two modules: searching and ranking
+BegRetriever uses beg-reranker-large of BAAI as cross encoder
 """
 from whoosh.index import open_dir
 from whoosh.qparser import QueryParser
@@ -39,7 +37,7 @@ class BegRetriever:
         # print(f"Searched reviews: {len(ids)}")
 
         if len(ids) == 0:
-            print("未搜索到相关评论！")
+            print("Fail to search related reviews!")
             return None
         elif len(ids) <= 10:
             return ids
