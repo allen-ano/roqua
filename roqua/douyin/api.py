@@ -1,0 +1,93 @@
+"""
+web应用程序调用API
+"""
+from douyin.fn_QueryRewriter import ReWriter
+from douyin.fn_Retriever import BegRetriever
+from douyin.fn_TxtClustering import Clustering
+from douyin.fn_OpinionMiner import OpinionMiner
+from douyin.parameters import Parameters as param
+import jieba
+
+class DouyinAPI:
+    def __init__(self, llm):
+        self.rdb = param.rdb  # 评论数据库
+        self.rewriter = ReWriter(llm)
+        self.retriever = BegRetriever()
+        self.clustering = Clustering()
+        self.om = OpinionMiner(llm)
+
+    # 运行
+    def run(self, query):
+        # 1. 查询改写
+        target, topic, _ = self.rewriter.get(query)
+        if target is None or target == "None" or target[0] == 'None':
+            if topic is None or topic == "None" or topic[0] == 'None':
+                return "没有相关信息"
+            else:
+                target = jieba.cut(topic[0], cut_all=False)   # 对于一些提取不出entity的question,
+                target = list(target)
+                # print("Full Mode: " + "/ ".join(seg_list))  # 全模式
+
+        search_targets = target
+        topic = topic[0]
+        print(search_targets)
+        print(topic)
+
+        # 2. 检索
+        index = self.retriever.run(search_targets, topic)  # AND检索
+        if index is None or len(index) < 2:     # 如果没有检索到相关评论
+            if len(search_targets) < 2:         # 如果只有一个实体，分词后进行与检索
+                temp = jieba.cut(search_targets[0], cut_all=False)  # 对于一些提取不出entity的question,
+                temp = list(temp)
+                if len(temp) == 1: return "没有相关信息"
+                index = self.retriever.run(temp, topic)  # AND检索
+                if index is None or len(index) < 2:
+                    return "没有相关信息"
+            else:                           # 有多个实体则进行或检索
+                print("没有相关信息！进行OR检索")
+                index = self.retriever.run(search_targets, topic, False, sim_th=0.2, rank_choose=40)
+                if index is None or len(index) < 2:
+                    return "没有相关信息"
+
+        # 3. 聚类和观点挖掘
+        if len(index) > 50:  # clustering
+            print("Clustering...")
+            # print(index)
+            if len(index) < 70:
+                clusters = self.clustering.run(self.rdb, index, k=2)
+            else:
+                clusters = self.clustering.run(self.rdb, index)
+
+            response = ""
+            for index, cluster in enumerate(clusters):
+                if len(cluster) < 2:
+                    print("没有相关信息！")
+                    continue
+                # print(cluster)
+                opinion = self.om.summarize_opinion(query, cluster)
+                response += f"{index}: {opinion}\n"
+                # print(f"{index}: {opinion}")
+
+            opinion =  response + "\n===进一步总结===\n" +self.om.summrize_opinion_again(query, response)
+        else:               # 评论数量少则不聚类操作
+            reviews = self.clustering.get_reviews(self.rdb, index)
+            if len(reviews) == 0:
+                opinion = "没有相关信息！"
+            else:
+                # print(reviews)
+                opinion = self.om.summarize_opinion(query, reviews, num=30)
+
+        return opinion
+
+    # 实验：只使用BM25
+    def run2(self, query):
+        index = self.retriever.run2(query)  # AND检索
+
+        reviews = self.clustering.get_reviews(self.rdb, index)
+        if len(reviews) == 0:
+            opinion = "没有相关信息！"
+        else:
+            opinion = self.om.summarize_opinion(query, reviews, num=30)
+
+        return opinion
+
