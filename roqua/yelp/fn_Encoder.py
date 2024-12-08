@@ -1,12 +1,12 @@
 """
-文本编码器
+Text encoder
 """
 from transformers import AutoModel, AutoTokenizer
 import numpy as np
 
 
 class TxtEncoder():
-    def __init__(self, checkpoint): # 评论数据库和向量数据库
+    def __init__(self, checkpoint): 
         device = "cuda"
         self.model = AutoModel.from_pretrained(checkpoint).to(device)
         self.tokenizer = AutoTokenizer.from_pretrained(checkpoint)
