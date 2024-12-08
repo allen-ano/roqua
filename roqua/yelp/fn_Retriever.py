@@ -25,7 +25,7 @@ class BegRetriever:
         self.ix = open_dir(param.indexdir)
         self.sim_th = sim_th
 
-    # 因为QueryParser解析查询产生的term,太多。故不用QueryPaser, 自己创建query对象。与关心的查询对象
+    # QueryParser generates too many terms. instead we create query by combining  entities.
     def create_query(self, field, terms):
         tlist = []
         for term in terms:
