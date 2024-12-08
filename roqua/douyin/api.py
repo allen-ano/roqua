@@ -1,5 +1,5 @@
 """
-web应用程序调用API
+Main interface for using ROQuA on Douyin
 """
 from douyin.fn_QueryRewriter import ReWriter
 from douyin.fn_Retriever import BegRetriever
@@ -10,15 +10,15 @@ import jieba
 
 class DouyinAPI:
     def __init__(self, llm):
-        self.rdb = param.rdb  # 评论数据库
+        self.rdb = param.rdb  # reviews db
         self.rewriter = ReWriter(llm)
         self.retriever = BegRetriever()
         self.clustering = Clustering()
         self.om = OpinionMiner(llm)
 
-    # 运行
+    # start from here
     def run(self, query):
-        # 1. 查询改写
+        # 1. Query rewriting
         target, topic, _ = self.rewriter.get(query)
         if target is None or target == "None" or target[0] == 'None':
             if topic is None or topic == "None" or topic[0] == 'None':
@@ -26,14 +26,13 @@ class DouyinAPI:
             else:
                 target = jieba.cut(topic[0], cut_all=False)   # 对于一些提取不出entity的question,
                 target = list(target)
-                # print("Full Mode: " + "/ ".join(seg_list))  # 全模式
-
+               
         search_targets = target
         topic = topic[0]
         print(search_targets)
         print(topic)
 
-        # 2. 检索
+        # 2. retriever
         index = self.retriever.run(search_targets, topic)  # AND检索
         if index is None or len(index) < 2:     # 如果没有检索到相关评论
             if len(search_targets) < 2:         # 如果只有一个实体，分词后进行与检索
@@ -49,7 +48,7 @@ class DouyinAPI:
                 if index is None or len(index) < 2:
                     return "没有相关信息"
 
-        # 3. 聚类和观点挖掘
+        # 3. Clustering and opinoin mining
         if len(index) > 50:  # clustering
             print("Clustering...")
             # print(index)
@@ -76,18 +75,6 @@ class DouyinAPI:
             else:
                 # print(reviews)
                 opinion = self.om.summarize_opinion(query, reviews, num=30)
-
-        return opinion
-
-    # 实验：只使用BM25
-    def run2(self, query):
-        index = self.retriever.run2(query)  # AND检索
-
-        reviews = self.clustering.get_reviews(self.rdb, index)
-        if len(reviews) == 0:
-            opinion = "没有相关信息！"
-        else:
-            opinion = self.om.summarize_opinion(query, reviews, num=30)
 
         return opinion
 
