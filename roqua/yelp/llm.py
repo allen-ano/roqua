@@ -1,11 +1,10 @@
 """
-Qwen开源基座大模型
+LLMs
 """
 
 from transformers import AutoModelForCausalLM, AutoTokenizer,AutoModel
 
 
-# 通义千问大模型
 class Qwen:
     def __init__(self):
         device = "cuda"  # the device to load the model onto
