@@ -1,5 +1,5 @@
 """
-使用通义千问大模型进行观点挖掘
+Using LLM to summarize opinions
 """
 
 import json
