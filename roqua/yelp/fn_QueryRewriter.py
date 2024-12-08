@@ -1,5 +1,5 @@
 """
-查询改写，一是抽取其中的entities，二是提炼它的topic
+extracting entities and topics
 """
 from llm import Qwen
 from yelp.llm_prompts import GET_NE_TOPIC_PROMPT
