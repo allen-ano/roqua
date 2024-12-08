@@ -1,5 +1,5 @@
 """
-基于Milvus的向量数据库
+Vector DB with Milvus
 """
 import numpy as np
 from pymilvus import MilvusClient
