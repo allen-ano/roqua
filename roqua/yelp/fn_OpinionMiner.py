@@ -50,7 +50,7 @@ class OpinionMiner:
         # print(s)
         sys_content = """You are an expert on text analysis."""
         usr_content = OPINION_SUMMARIZE_PE.format(question, s, num)
-        # usr_content = OPINION_SUMMARIZE_COT.format(question, s, num)    # 限制大模型的幻觉
+        # usr_content = OPINION_SUMMARIZE_COT.format(question, s, num)    # limit hallucination
 
         messages = [{'role': 'system', 'content': sys_content}, {'role': 'user', 'content': usr_content}]
         res = self.model.call_with_message(messages)
